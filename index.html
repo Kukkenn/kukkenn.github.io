@@ -1,0 +1,2200 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      var d = document.documentElement, skip = false, lang = null;
+      d.classList.add('js');
+      try { lang = localStorage.getItem('lang'); } catch (e) {}
+      if (lang !== 'pl' && lang !== 'en') lang = null;
+      try { skip = sessionStorage.getItem('introSeen') === '1'; } catch (e) {}
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) skip = true;
+      if (lang) d.lang = lang;
+      if (!lang) d.classList.add('intro', 'choose');      // pierwsza wizyta: najpierw wybór języka
+      else d.classList.add(skip ? 'ready' : 'intro');
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#07080a">
+  <meta name="description" content="Robię szybkie strony www i skrypty w Pythonie, które oszczędzają czas. Bez ciężkich frameworków i bez zbędnego kombinowania.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2307080a'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%235b84ff'/%3E%3C/svg%3E">
+  <title>Bartosz Grześkowiak | Frontend Developer i specjalista od automatyzacji</title>
+  
+  <meta property="og:title" content="Bartosz Grześkowiak | Frontend Developer i specjalista od automatyzacji">
+  <meta property="og:description" content="Robię szybkie strony www i skrypty w Pythonie, które oszczędzają czas. Bez ciężkich frameworków i bez zbędnego kombinowania.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pl_PL">
+  <meta property="og:url" content="https://kukkenn.github.io/">
+  <meta property="og:image" content="https://kukkenn.github.io/projecthub.webp">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #07080a;
+      --surface: #111319;
+      --surface-2: #151822;
+      --border: #22252f;
+      --border-soft: #1a1c24;
+      --white: #f5f5f6;
+      --gray-1: #9ea1ad;
+      --gray-2: #8b8e9b;
+      --blue: #5b84ff;
+      --blue-dim: #3a4d8f;
+      --blue-glow: rgba(91, 132, 255, 0.16);
+      --green: #4cd964;
+      --green-glow: rgba(76, 217, 100, 0.15);
+      --red: #ff4d4d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: env(safe-area-inset-top, 0px);
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--white);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      
+      background-image:
+        radial-gradient(circle 500px at 15% 10%, rgba(91, 132, 255, 0.12), transparent 70%),
+        radial-gradient(circle 450px at 85% 30%, rgba(91, 132, 255, 0.08), transparent 65%),
+        radial-gradient(circle 600px at 20% 65%, rgba(91, 132, 255, 0.06), transparent 70%),
+        radial-gradient(circle 500px at 80% 85%, rgba(91, 132, 255, 0.10), transparent 65%);
+      background-attachment: fixed;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, textarea {
+      font: inherit;
+      color: inherit;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    ::selection {
+      background: var(--blue);
+      color: #04050a;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 60px);
+    }
+
+    /* Nawigacja */
+    .nav-container {
+      display: flex;
+      justify-content: center;
+      position: sticky;
+      top: 16px;
+      z-index: 100;
+      width: 100%;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 10px 24px;
+      background: rgba(17, 19, 25, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .nav .mark {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .nav .mark .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 10px var(--blue-glow);
+    }
+
+    .nav .links {
+      display: flex;
+      gap: clamp(12px, 2.5vw, 24px);
+      font-size: 13.5px;
+      color: var(--gray-1);
+    }
+
+    .nav .links a {
+      transition: color 0.2s, transform 0.2s;
+      display: inline-block;
+    }
+
+    .nav .links a:hover {
+      color: var(--blue);
+      transform: translateY(-1px);
+    }
+
+    /* Hero */
+    .hero {
+      padding: clamp(48px, 8vw, 80px) 0 clamp(40px, 6vw, 64px);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 44px;
+      align-items: center;
+    }
+
+    @media (min-width: 960px) {
+      .hero-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 64px;
+      }
+    }
+
+    .hero .kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--gray-1);
+      margin-bottom: 20px;
+    }
+
+    .hero .kicker .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green-glow);
+    }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: clamp(34px, 5vw, 52px);
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 span {
+      color: var(--blue);
+    }
+
+    .hero p {
+      font-size: clamp(15.5px, 2vw, 17px);
+      line-height: 1.65;
+      color: var(--gray-1);
+      max-width: 52ch;
+      margin-bottom: 32px;
+    }
+
+    .hero .actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--white);
+      color: #04050a;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue);
+      color: #fff;
+      box-shadow: 0 4px 20px var(--blue-glow);
+    }
+
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--white);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--blue-dim);
+      color: var(--blue);
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 12.5px;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    /* Hero Panel Kodowy */
+    .hero-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(91, 132, 255, 0.05);
+      overflow: hidden;
+    }
+
+    .hero-panel .hp-bar {
+      display: flex;
+      gap: 6px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-soft);
+      background: rgba(0,0,0,0.2);
+    }
+
+    .hero-panel .hp-bar span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .hero-panel pre {
+      padding: 22px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13.5px;
+      line-height: 1.8;
+      color: var(--gray-1);
+      overflow-x: hidden;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .hero-panel .k { color: var(--white); }
+    .hero-panel .s { color: var(--blue); }
+    .hero-panel .c { color: var(--gray-2); }
+
+    /* Sekcja Metryk */
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+      margin-bottom: 48px;
+    }
+
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .metric-card .val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .metric-card .lbl {
+      font-size: 13px;
+      color: var(--gray-1);
+    }
+
+    /* Nagłówki sekcji */
+    .section {
+      padding: clamp(48px, 8vw, 72px) 0;
+      border-top: 1px solid var(--border-soft);
+      scroll-margin-top: 24px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: clamp(24px, 5vw, 36px);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: clamp(22px, 3.5vw, 28px);
+      letter-spacing: -0.01em;
+    }
+
+    .section-head .note {
+      font-size: 13.5px;
+      color: var(--gray-2);
+    }
+
+    /* Sekcja O mnie */
+    .about-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--gray-1);
+    }
+
+    /* Grid Usług / W czym pomagam */
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 900px) {
+      .services-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--blue-dim);
+    }
+
+    .service-card .service-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .service-card .title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--white);
+    }
+
+    .service-block {
+      margin-bottom: 16px;
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+
+    .service-block .label-prob {
+      color: var(--red);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 2px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .service-block .label-sol {
+      color: var(--green);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 2px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .service-desc {
+      color: var(--gray-1);
+    }
+
+    .service-card .btn {
+      margin-top: auto;
+    }
+
+    /* Grid Projektów */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .project-preview.has-img {
+      height: auto;
+      padding: 0;
+      background: var(--bg);
+    }
+
+    .project-preview.has-img img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    @media (min-width: 900px) {
+      .project-card.featured .project-content {
+        padding: 32px 36px 36px;
+      }
+
+      .project-card.featured .project-desc {
+        max-width: 68ch;
+        font-size: 15px;
+      }
+
+      .project-card.featured .project-points {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 32px;
+      }
+    }
+
+    .project-points {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--gray-1);
+    }
+
+    .project-points li {
+      position: relative;
+      padding-left: 18px;
+    }
+
+    .project-points li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    .project-points strong {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .project-points code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border-soft);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: var(--white);
+    }
+
+    .projects-more {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+      padding: 16px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--gray-1);
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--blue-dim);
+    }
+
+    .project-preview {
+      width: 100%;
+      height: 180px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border-soft);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mock-window {
+      width: 88%;
+      height: 80%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mock-header {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+
+    .mock-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .mock-line {
+      height: 8px;
+      background: var(--surface-2);
+      border-radius: 4px;
+    }
+
+    .project-content {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .project-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .project-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .project-year {
+      font-size: 12px;
+      color: var(--gray-2);
+    }
+
+    .project-desc {
+      font-size: 14px;
+      color: var(--gray-1);
+      line-height: 1.6;
+      margin-bottom: 16px;
+      flex-grow: 1;
+    }
+
+    .project-impact {
+      background: rgba(91, 132, 255, 0.08);
+      border-left: 3px solid var(--blue);
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--white);
+      margin-bottom: 16px;
+      border-radius: 0 4px 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .project-impact svg {
+      color: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      font-size: 12px;
+      color: var(--blue);
+      background: var(--blue-glow);
+      border: 1px solid var(--blue-dim);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .project-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Formularz Kontaktowy */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    @media (min-width: 960px) {
+      .contact-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        align-items: start;
+      }
+    }
+
+    .contact h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+
+    .contact p {
+      font-size: 15.5px;
+      color: var(--gray-1);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: var(--surface);
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      color: var(--gray-1);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: var(--white);
+      font-size: 14px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--blue);
+    }
+
+    .form-group.error input,
+    .form-group.error textarea {
+      border-color: var(--red) !important;
+      box-shadow: 0 0 0 1px var(--red);
+    }
+
+    .error-text {
+      font-size: 12px;
+      color: var(--red);
+      display: none;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .form-group.error .error-text {
+      display: flex;
+    }
+
+    .form-success-banner {
+      display: none;
+      background: rgba(76, 217, 100, 0.1);
+      border: 1px solid var(--green);
+      border-radius: 6px;
+      padding: 14px;
+      color: var(--white);
+      font-size: 13.5px;
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+
+    .form-success-banner.active {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .form-success-banner svg {
+      color: var(--green);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* CUSTOM SELECT */
+    .custom-select {
+      position: relative;
+      user-select: none;
+    }
+
+    .select-trigger {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: var(--white);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .select-trigger:hover,
+    .custom-select.open .select-trigger {
+      border-color: var(--blue);
+    }
+
+    .select-trigger .chevron {
+      color: var(--gray-2);
+      transition: transform 0.2s ease;
+    }
+
+    .custom-select.open .select-trigger .chevron {
+      transform: rotate(180deg);
+    }
+
+    .select-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      z-index: 50;
+      display: none;
+      flex-direction: column;
+      padding: 6px;
+      gap: 2px;
+    }
+
+    .custom-select.open .select-dropdown {
+      display: flex;
+      animation: fadeIn 0.15s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .select-option {
+      padding: 10px 12px;
+      font-size: 13.5px;
+      color: var(--gray-1);
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .select-option:hover {
+      background: var(--surface);
+      color: var(--white);
+    }
+
+    .select-option.selected {
+      background: var(--blue-glow);
+      color: var(--blue);
+      font-weight: 500;
+    }
+
+    .select-option .check-icon {
+      opacity: 0;
+      color: var(--blue);
+    }
+
+    .select-option.selected .check-icon {
+      opacity: 1;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .contact-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .contact-item:hover {
+      border-color: var(--blue-dim);
+    }
+
+    .contact-item .label {
+      font-size: 13px;
+      color: var(--gray-2);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .email-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .email-link-text {
+      color: var(--white);
+      text-decoration: none;
+      cursor: pointer;
+      word-break: break-all;
+      font-size: 17px;
+      transition: color 0.2s ease;
+    }
+
+    .contact-item.contact-email {
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 12px;
+      padding: 20px;
+    }
+
+    .ce-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ce-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .ce-actions .btn {
+      padding: 11px 12px;
+      font-size: 13.5px;
+      text-align: center;
+    }
+
+    .email-link-text:hover {
+      color: var(--blue);
+    }
+
+    .copied-toast {
+      font-size: 12px;
+      color: var(--green);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .copied-toast.show {
+      opacity: 1;
+    }
+
+    .status-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .status-card .sc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .status-card .sc-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .status-card .sc-row:first-child { padding-top: 0; }
+    .status-card .sc-label { color: var(--gray-2); }
+    .status-card .sc-value { color: var(--white); font-weight: 500; display: flex; align-items: center; gap: 8px; }
+    .status-card .sc-value .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-soft);
+      padding: 72px 0 32px;
+      margin-top: 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+    }
+
+    .footer-brand .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand .brand-title .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    .footer-brand p {
+      font-size: 14px;
+      color: var(--gray-1);
+      line-height: 1.6;
+      max-width: 36ch;
+    }
+
+    .footer-col h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-col a {
+      font-size: 14px;
+      color: var(--gray-1);
+      transition: color 0.15s ease;
+    }
+
+    .footer-col a:hover {
+      color: var(--blue);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-soft);
+      font-size: 13px;
+      color: var(--gray-2);
+    }
+
+    /* ================= MOBILE POLISH ================= */
+    html { -webkit-text-size-adjust: 100%; }
+
+    /* ukryty pasek przewijania (przewijanie kółkiem, dotykiem i klawiaturą działa jak zawsze) */
+    html { scrollbar-width: none; -ms-overflow-style: none; }
+    html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; height: 0; }
+    a, button, .select-trigger, .select-option { touch-action: manipulation; }
+
+    /* iOS ignoruje "background-attachment: fixed", więc poświata siedzi na stałej warstwie */
+    body { background-image: none; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle 500px at 15% 10%, rgba(91, 132, 255, 0.12), transparent 70%),
+        radial-gradient(circle 450px at 85% 30%, rgba(91, 132, 255, 0.08), transparent 65%),
+        radial-gradient(circle 600px at 20% 65%, rgba(91, 132, 255, 0.06), transparent 70%),
+        radial-gradient(circle 500px at 80% 85%, rgba(91, 132, 255, 0.10), transparent 65%);
+    }
+
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      z-index: 300;
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      background: linear-gradient(90deg, var(--blue), #a9bfff);
+      pointer-events: none;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    /* menu (przycisk widoczny tylko na telefonie) */
+    .menu-btn {
+      display: none;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+    }
+
+    .menu-btn span {
+      display: block;
+      width: 16px;
+      height: 1.5px;
+      border-radius: 2px;
+      background: var(--white);
+      transition: transform 0.3s ease;
+    }
+
+    .nav.open .menu-btn span:nth-child(1) { transform: translateY(3.25px) rotate(45deg); }
+    .nav.open .menu-btn span:nth-child(2) { transform: translateY(-3.25px) rotate(-45deg); }
+
+    @media (max-width: 700px) {
+      .nav { position: relative; padding: 7px 7px 7px 18px; }
+      .nav .mark { font-size: 15px; }
+      .menu-btn { display: flex; }
+
+      .nav .links {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 2px;
+        padding: 8px;
+        background: #111319;
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px) scale(0.98);
+        transform-origin: top right;
+        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+      }
+
+      .nav.open .links { opacity: 1; visibility: visible; transform: none; }
+
+      .nav .links a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 52px;
+        padding: 0 16px;
+        font-size: 16px;
+        color: var(--white);
+        border-radius: 14px;
+      }
+
+      .nav .links a::after { content: "\2192"; color: var(--gray-2); }
+      .nav .links a:active { background: var(--blue-glow); }
+    }
+
+    /* hero: delikatny ruch */
+    .hero { position: relative; }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 8%;
+      right: 0;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(91, 132, 255, 0.28), transparent 70%);
+      filter: blur(24px);
+      pointer-events: none;
+      z-index: -1;
+      animation: floatGlow 10s ease-in-out infinite;
+    }
+
+    @keyframes floatGlow {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-30px, 40px) scale(1.15); }
+    }
+
+    .hero .kicker {
+      display: inline-flex;
+      width: fit-content;
+      padding: 7px 14px;
+      font-size: 13px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(17, 19, 25, 0.6);
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #5b84ff 0%, #a9bfff 50%, #5b84ff 100%);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      animation: gradShift 6s linear infinite;
+    }
+
+    @keyframes gradShift { to { background-position: -200% 0; } }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .hero-grid > div:first-child > * { animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+    .hero-grid > div:first-child > :nth-child(2) { animation-delay: 0.08s; }
+    .hero-grid > div:first-child > :nth-child(3) { animation-delay: 0.16s; }
+    .hero-grid > div:first-child > :nth-child(4) { animation-delay: 0.24s; }
+    .hero-panel { animation: fadeUp 0.9s 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+    .cursor {
+      display: inline-block;
+      width: 7px;
+      height: 1.1em;
+      margin-left: 3px;
+      vertical-align: -2px;
+      background: var(--blue);
+      animation: blink 1s steps(2) infinite;
+    }
+
+    @keyframes blink { to { opacity: 0; } }
+
+    /* pojawianie się elementów przy przewijaniu */
+    .js-reveal .rv {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .js-reveal .rv.in { opacity: 1; transform: none; }
+
+    @media (hover: none) {
+      .service-card:hover, .project-card:hover { transform: none; border-color: var(--border); }
+      .btn-primary:hover { background: var(--white); color: #04050a; box-shadow: none; }
+      .btn-ghost:hover { border-color: var(--border); color: var(--white); }
+    }
+
+    @media (max-width: 900px) {
+      .form-group input, .form-group textarea, .select-trigger { font-size: 16px; }
+    }
+
+    @media (max-width: 640px) {
+      .wrap { padding: 0 18px; }
+
+      .hero { padding-top: 36px; padding-bottom: 28px; }
+      .hero-grid { gap: 34px; }
+      .hero h1 { font-size: clamp(32px, 9vw, 38px); margin-bottom: 18px; }
+      .hero p { font-size: 16px; margin-bottom: 26px; }
+      .hero .actions { flex-direction: column; gap: 12px; }
+      .hero .actions .btn { width: 100%; min-height: 52px; font-size: 15px; }
+      .hero-panel pre { font-size: 12px; padding: 18px; line-height: 1.75; }
+
+      .metrics-bar { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 36px; }
+      .metric-card { padding: 16px 14px; gap: 6px; }
+      .metric-card .val { font-size: 17px; line-height: 1.25; }
+      .metric-card .lbl { font-size: 12px; line-height: 1.45; }
+
+      .section { padding: 44px 0; scroll-margin-top: 40px; }
+      .section-head { flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: 22px; }
+      .section-head .note { font-size: 14px; }
+      .about-box { padding: 22px; font-size: 15.5px; line-height: 1.75; }
+
+      .services-grid { gap: 16px; }
+      .service-card { padding: 22px 20px; }
+      .service-card .btn { min-height: 48px; }
+
+      .projects-grid { gap: 20px; }
+      .project-content { padding: 20px; }
+      .project-title { font-size: 22px; }
+      .project-impact { font-size: 13px; align-items: flex-start; }
+      .project-impact svg { margin-top: 2px; }
+      .project-actions .btn { width: 100%; min-height: 48px; }
+      .projects-more { flex-direction: column; align-items: stretch; text-align: center; padding: 18px; }
+      .projects-more .btn { width: 100%; min-height: 48px; }
+
+      .contact h2 { font-size: 28px; }
+      .contact p { font-size: 15.5px; }
+      .contact-grid { gap: 28px; }
+      .status-card { padding: 18px 20px; margin-bottom: 16px; }
+      .contact-form { padding: 20px; gap: 16px; }
+      .btn-full { min-height: 52px; font-size: 15px; }
+      .select-option { padding: 14px 12px; font-size: 15px; }
+      .contact-item.contact-email { padding: 18px; }
+      .ce-actions .btn { min-height: 48px; }
+
+      footer { padding: 44px 0 calc(28px + env(safe-area-inset-bottom, 0px)); margin-top: 0; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px 16px; margin-bottom: 32px; }
+      .footer-brand { grid-column: 1 / -1; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+
+    @media (max-width: 380px) {
+      .hero-panel pre { font-size: 11px; padding: 16px; }
+      .metric-card .val { font-size: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    .mail-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .mail-options[hidden] { display: none; }
+
+    .mail-options-label {
+      width: 100%;
+      font-size: 12.5px;
+      color: var(--gray-1);
+    }
+
+    .mail-options .btn {
+      min-height: 44px;
+      padding: 10px 14px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .contact-email .mail-options { margin-top: 2px; }
+
+    .contact-head { max-width: 640px; margin-bottom: 32px; }
+    .contact-head h2 { margin-bottom: 14px; }
+    .contact-head p { margin-bottom: 0; }
+
+    .contact-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    @media (min-width: 860px) {
+      .contact-cards { grid-template-columns: 1fr 1fr; gap: 20px; }
+    }
+
+    .contact-cards .status-card {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .contact-cards .status-card .sc-row { padding: 14px 0; }
+    .contact-cards .status-card .sc-row:first-child { padding-top: 0; }
+    .contact-cards .status-card .sc-row:last-child { padding-bottom: 0; }
+
+    .sc-link { transition: color 0.2s ease; }
+    .sc-link:hover { color: var(--blue); }
+
+    .email-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .ec-label { font-size: 14px; color: var(--gray-2); }
+
+    .ce-address {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(17px, 5vw, 22px);
+      font-weight: 600;
+      line-height: 1.3;
+      word-break: break-all;
+      color: var(--white);
+    }
+
+    .email-card .btn-full { min-height: 50px; font-size: 15px; }
+
+    /* ================= EKRAN STARTOWY ================= */
+    #intro { display: none; }
+
+    html.intro, html.intro body { overflow: hidden; }
+
+    html.intro #intro {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+
+    html.intro #intro::before {
+      content: "";
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(91, 132, 255, 0.22), transparent 70%);
+      filter: blur(30px);
+      animation: introGlow 2.4s ease-in-out infinite;
+    }
+
+    @keyframes introGlow { 0%, 100% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.15); opacity: 1; } }
+
+    html.intro-out #intro { transform: translateY(-100%); }
+
+    .intro-inner { position: relative; text-align: center; padding: 0 24px; }
+
+    .intro-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: clamp(24px, 7vw, 34px);
+      letter-spacing: -0.01em;
+      animation: introUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+    }
+
+    .intro-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 18px var(--blue);
+      animation: blink 1.2s ease-in-out infinite alternate;
+    }
+
+    .intro-role {
+      margin-top: 10px;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gray-1);
+      animation: introUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+    }
+
+    .intro-bar {
+      width: 140px;
+      height: 2px;
+      margin: 28px auto 0;
+      border-radius: 2px;
+      background: var(--border);
+      overflow: hidden;
+      animation: introUp 0.8s ease 0.45s both;
+    }
+
+    .intro-bar span {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--blue), #a9bfff);
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      animation: introFill 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.35s forwards;
+    }
+
+    @keyframes introUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @keyframes introFill { to { transform: scaleX(1); } }
+
+    /* hero czeka z animacją wejścia, aż zniknie ekran startowy */
+    html.js:not(.ready) .hero-grid > div:first-child > *,
+    html.js:not(.ready) .hero-panel {
+      animation: none;
+      opacity: 0;
+    }
+
+    /* podświetlenie karty pod kursorem (tylko myszka) */
+    .metric-card, .service-card, .project-card { position: relative; }
+
+    @media (hover: hover) and (pointer: fine) {
+      .metric-card::after, .service-card::after, .project-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(91, 132, 255, 0.14), transparent 70%);
+      }
+
+      .metric-card:hover::after, .service-card:hover::after, .project-card:hover::after { opacity: 1; }
+    }
+
+    /* ================= WYBÓR JĘZYKA ================= */
+    .intro-choose { display: none; }
+
+    html.choose .intro-bar { display: none; }
+
+    html.choose .intro-choose {
+      display: block;
+      margin-top: 34px;
+      animation: introUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
+    }
+
+    .intro-ask {
+      font-size: 15px;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    .intro-ask span { color: var(--gray-2); }
+
+    .lang-btns { display: flex; gap: 12px; justify-content: center; }
+
+    .lang-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-width: 140px;
+      min-height: 56px;
+      padding: 0 20px;
+      font-size: 16px;
+      font-weight: 500;
+      text-align: center;
+      color: var(--white);
+      background: rgba(17, 19, 25, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+    }
+
+    .lang-btn:hover { border-color: var(--blue); background: rgba(91, 132, 255, 0.1); }
+    .lang-btn:active { transform: scale(0.96); }
+
+    .lang-flag {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--blue);
+      padding: 3px 7px;
+      border: 1px solid var(--blue-dim);
+      border-radius: 6px;
+    }
+
+    @media (max-width: 380px) {
+      .lang-btns { flex-direction: column; align-items: center; }
+      .lang-btn { width: 100%; max-width: 240px; }
+    }
+
+    /* przełącznik języka w pasku nawigacji */
+    .lang-switch { display: none; }
+
+    html.js .lang-switch {
+      display: inline-flex;
+      padding: 3px;
+      gap: 2px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .lang-switch button {
+      min-width: 38px;
+      min-height: 30px;
+      padding: 0 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-align: center;
+      color: var(--gray-1);
+      border-radius: 999px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .lang-switch button[aria-pressed="true"] { background: var(--blue); color: #04050a; }
+
+    @media (max-width: 700px) {
+      html.js .lang-switch {
+        align-self: flex-start;
+        margin: 6px 8px 4px;
+      }
+
+      .lang-switch button { min-height: 40px; min-width: 56px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="intro-inner">
+    <div class="intro-name"><span class="intro-dot"></span>Bartosz Grześkowiak</div>
+    <div class="intro-role">Frontend Developer</div>
+    <div class="intro-bar"><span></span></div>
+    <div class="intro-choose">
+      <p class="intro-ask">Wybierz język <span>/ Choose your language</span></p>
+      <div class="lang-btns">
+        <button type="button" class="lang-btn" data-lang="pl"><span class="lang-flag">PL</span>Polski</button>
+        <button type="button" class="lang-btn" data-lang="en"><span class="lang-flag">EN</span>English</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="nav-container">
+    <nav class="nav" id="nav">
+      <div class="mark"><span class="dot"></span>Bartosz Grześkowiak</div>
+      <div class="links" id="nav-links">
+        <a href="#o-mnie" data-i18n="nav_about">O mnie</a>
+        <a href="#uslugi" data-i18n="nav_services">Usługi</a>
+        <a href="#projekty" data-i18n="nav_projects">Projekty</a>
+        <a href="#kontakt" data-i18n="nav_contact">Kontakt</a>
+        <div class="lang-switch" role="group" aria-label="Język / Language">
+          <button type="button" data-lang="pl" aria-pressed="true">PL</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+      <button class="menu-btn" id="menu-btn" type="button" aria-label="Otwórz menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span></button>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker"><span class="dot"></span><span data-i18n="kicker">Przyjmuję nowe zlecenia</span></div>
+        <h1 data-i18n-html="h1">Buduję <span>szybkie strony www</span> i skrypty, które robią robotę za Ciebie.</h1>
+        <p data-i18n="hero_p">Cześć, jestem Bartosz. Piszę strony od zera w czystym HTML, CSS i JavaScripcie, dzięki czemu ładują się błyskawicznie. Do tego robię skrypty w Pythonie, które zdejmują Ci z głowy nudną, powtarzalną robotę.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#kontakt" data-i18n="cta1">Napisz do mnie, wycenię za darmo ➔</a>
+          <a class="btn btn-ghost" href="#projekty" data-i18n="cta2">Zobacz, co zbudowałem</a>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <div class="hp-bar"><span></span><span></span><span></span></div>
+        <pre><span class="c" data-i18n="code_c"># Specyfikacja techniczna</span>
+<span class="k">class</span> Developer:
+    stack = [<span class="s">"HTML"</span>, <span class="s">"CSS"</span>, <span class="s">"JS"</span>, <span class="s">"Python"</span>]
+    <span data-i18n="code_var">kod</span> = <span class="s" data-i18n="code_val">"Czysty, bez narzutów"</span>
+    status = <span class="s" data-i18n="status_val">"Otwarty na zlecenia"</span>
+    mail = <span class="s">"65-enty.chichotac@icloud.com"</span><span class="cursor"></span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Metryki -->
+  <div class="metrics-bar">
+    <div class="metric-card">
+      <div class="val" data-i18n="m1v">&lt; 1 sekunda</div>
+      <div class="lbl" data-i18n="m1l">Tyle średnio ładują się moje strony</div>
+    </div>
+    <div class="metric-card">
+      <div class="val" data-i18n="m2v">100% czysty kod</div>
+      <div class="lbl" data-i18n="m2l">Bez szablonów i ciężkich frameworków</div>
+    </div>
+    <div class="metric-card">
+      <div class="val" data-i18n="m3v">Do 90% mniej roboty</div>
+      <div class="lbl" data-i18n="m3l">Gdy powtarzalne zadania robi skrypt w Pythonie</div>
+    </div>
+    <div class="metric-card">
+      <div class="val" data-i18n="m4v">Wycena w 24h</div>
+      <div class="lbl" data-i18n="m4l">Odpisuję i wyceniam za darmo, zwykle w ciągu doby</div>
+    </div>
+  </div>
+
+  <section class="section" id="o-mnie">
+    <div class="section-head">
+      <h2 data-i18n="about_h">O mnie</h2>
+      <div class="note" data-i18n="about_note">Krótko o tym, jak pracuję</div>
+    </div>
+    <div class="about-box" data-i18n="about_text">
+      Nie robię stron na ciężkich szablonach, które ładują się w nieskończoność. Piszę własny, lekki kod w HTML, CSS i JavaScripcie, a do tego skrypty w Pythonie, które porządkują dane i oszczędzają godziny pracy. Zależy mi na tym, żeby strona była szybka, ładna i wygodna na telefonie, a Tobie zostawiała więcej czasu na prowadzenie firmy.
+    </div>
+  </section>
+
+  <section class="section" id="uslugi">
+    <div class="section-head">
+      <h2 data-i18n="svc_h">W czym mogę pomóc</h2>
+      <div class="note" data-i18n="svc_note">Konkretne problemy, konkretne rozwiązania</div>
+    </div>
+
+    <div class="services-grid">
+      <!-- Usługa 1 -->
+      <div class="service-card">
+        <div class="service-num" data-i18n="s1_num">01 / Strony www</div>
+        <div class="title" data-i18n="s1_title">Strona lub landing page od zera</div>
+        
+        <div class="service-block">
+          <span class="label-prob" data-i18n="lbl_prob">Problem:</span>
+          <span class="service-desc" data-i18n="s1_prob">Strona na kreatorze ładuje się wolno i klienci wychodzą, zanim zobaczą Twoją ofertę.</span>
+        </div>
+
+        <div class="service-block">
+          <span class="label-sol" data-i18n="lbl_sol">Jak pomogę:</span>
+          <span class="service-desc" data-i18n="s1_sol">Piszę ją od podstaw w czystym kodzie. Ładuje się poniżej sekundy, więc więcej osób z reklam faktycznie ją zobaczy.</span>
+        </div>
+
+        <a class="btn btn-ghost btn-full" href="#kontakt" data-i18n="ask">Zapytaj o to</a>
+      </div>
+
+      <!-- Usługa 2 -->
+      <div class="service-card">
+        <div class="service-num" data-i18n="s2_num">02 / Poprawki</div>
+        <div class="title" data-i18n="s2_title">Naprawa wyglądu i wersji mobilnej</div>
+        
+        <div class="service-block">
+          <span class="label-prob" data-i18n="lbl_prob">Problem:</span>
+          <span class="service-desc" data-i18n="s2_prob">Na telefonie wszystko się rozjeżdża, elementy na siebie nachodzą albo skrypt przycina.</span>
+        </div>
+
+        <div class="service-block">
+          <span class="label-sol" data-i18n="lbl_sol">Jak pomogę:</span>
+          <span class="service-desc" data-i18n="s2_sol">Znajdę błąd, poprawię kod i dopilnuję, żeby wszystko ładnie wyglądało i płynnie działało na każdym ekranie.</span>
+        </div>
+
+        <a class="btn btn-ghost btn-full" href="#kontakt" data-i18n="ask">Zapytaj o to</a>
+      </div>
+
+      <!-- Usługa 3 -->
+      <div class="service-card">
+        <div class="service-num" data-i18n="s3_num">03 / Automatyzacja</div>
+        <div class="title" data-i18n="s3_title">Skrypty w Pythonie, które oszczędzają czas</div>
+        
+        <div class="service-block">
+          <span class="label-prob" data-i18n="lbl_prob">Problem:</span>
+          <span class="service-desc" data-i18n="s3_prob">Co miesiąc tracisz godziny na przepisywanie, porządkowanie i sprawdzanie plików CSV czy Excela.</span>
+        </div>
+
+        <div class="service-block">
+          <span class="label-sol" data-i18n="lbl_sol">Jak pomogę:</span>
+          <span class="service-desc" data-i18n="s3_sol">Napiszę skrypt, który zrobi to za Ciebie. To, co zajmowało godziny, trwa ułamek sekundy.</span>
+        </div>
+
+        <a class="btn btn-ghost btn-full" href="#kontakt" data-i18n="ask">Zapytaj o to</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projekty">
+    <div class="section-head">
+      <h2 data-i18n="proj_h">Wybrane realizacje</h2>
+      <div class="note" data-i18n="proj_note">Aplikacja, którą napisałem od zera</div>
+    </div>
+
+    <div class="projects-grid">
+      <article class="project-card featured">
+        <div class="project-preview has-img">
+          <img src="projecthub.webp" width="1400" height="800" loading="lazy" decoding="async"
+               alt="ProjectHub: biblioteka projektów i widok dokumentacji w jednej aplikacji" data-i18n-alt="proj_alt">
+        </div>
+        <div class="project-content">
+          <div class="project-meta">
+            <h3 class="project-title">ProjectHub</h3>
+            <span class="project-year">2026</span>
+          </div>
+          <p class="project-desc" data-i18n="proj_desc">Aplikacja, która porządkuje wszystkie moje projekty w jednym miejscu. Repozytoria, ścieżki, komendy do odpalania i notatki trzymam w jednym panelu na własnym komputerze, bez chmury i bez wysyłania czegokolwiek w świat.</p>
+          <ul class="project-points">
+            <li data-i18n-html="pt1"><strong>Komendy jednym kliknięciem.</strong> Zapisujesz je dla każdego projektu (np. <code>npm run dev</code> albo <code>pytest</code>) i odpalasz bez wchodzenia do terminala.</li>
+            <li data-i18n-html="pt2"><strong>Skaner katalogów.</strong> Wskazujesz folder, a aplikacja sama rozpozna technologie i doda projekty hurtem.</li>
+            <li data-i18n-html="pt3"><strong>Bezpieczny podgląd stron.</strong> Testujesz je w odizolowanym sandboxie, a całość jest zabezpieczona przed Zip-Slip, path traversal i CSRF.</li>
+            <li data-i18n-html="pt4"><strong>Edytor, dokumentacja i backup.</strong> Pliki poprawisz w przeglądarce, notatki napiszesz w Markdownie, a całość spakujesz do ZIP-a jednym kliknięciem. Interfejs jest po polsku i angielsku.</li>
+          </ul>
+          <div class="project-impact">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span data-i18n="impact">100% lokalnie: SQLite na 127.0.0.1, więc kod i dane nie opuszczają Twojego komputera</span>
+          </div>
+          <div class="project-tags">
+            <span class="tag">Python</span>
+            <span class="tag">FastAPI</span>
+            <span class="tag">SQLite</span>
+            <span class="tag">Vanilla JS SPA</span>
+            <span class="tag">Docker</span>
+          </div>
+          <div class="project-actions">
+            <a href="https://github.com/Kukkenn/ProjectHub" class="btn btn-primary btn-sm" target="_blank" rel="noopener" data-i18n="view_code">Zobacz kod na GitHubie ↗</a>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="projects-more">
+      <span data-i18n="more">Resztę moich projektów znajdziesz na GitHubie</span>
+      <a href="https://github.com/Kukkenn" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">github.com/Kukkenn ↗</a>
+    </div>
+  </section>
+
+  <section class="section contact" id="kontakt">
+    <div class="contact-head">
+      <h2 data-i18n="ct_h">Pogadajmy o Twoim projekcie</h2>
+      <p data-i18n="ct_p">Chcesz szybszą stronę albo pozbyć się nudnej, powtarzalnej roboty? Napisz mi kilka zdań, co potrzebujesz, a wrócę z darmową wyceną. Zwykle odpisuję w ciągu doby.</p>
+    </div>
+
+    <div class="contact-cards">
+      <div class="status-card">
+        <div class="sc-row"><span class="sc-label">Status</span><span class="sc-value"><span class="dot"></span><span data-i18n="st_avail">Dostępny do pracy</span></span></div>
+        <div class="sc-row"><span class="sc-label" data-i18n="st_resp_l">Czas odpowiedzi</span><span class="sc-value" data-i18n="st_resp_v">Zwykle w ciągu doby</span></div>
+        <div class="sc-row"><span class="sc-label" data-i18n="st_loc_l">Lokalizacja</span><span class="sc-value" data-i18n="st_loc_v">Polska, pracuję zdalnie</span></div>
+        <div class="sc-row"><span class="sc-label">GitHub</span><a class="sc-value sc-link" href="https://github.com/Kukkenn" target="_blank" rel="noopener">github.com/Kukkenn ↗</a></div>
+      </div>
+
+      <div class="email-card">
+        <div class="ce-top">
+          <span class="ec-label" data-i18n="em_label">Mój adres e-mail</span>
+          <span id="copied-toast" class="copied-toast" data-i18n="copied">Skopiowano!</span>
+        </div>
+        <div class="ce-address">65-enty.chichotac@icloud.com</div>
+        <button class="btn btn-primary btn-full" type="button" onclick="copyEmail()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span data-i18n="copy_btn">Kopiuj adres</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand-title"><span class="dot"></span>Bartosz Grześkowiak</div>
+        <p data-i18n="f_text">Robię szybkie strony www i skrypty w Pythonie. Czysty kod, szybkość i porządny wygląd.</p>
+      </div>
+      <div class="footer-col">
+        <h3 data-i18n="f_nav">Nawigacja</h3>
+        <ul>
+          <li><a href="#o-mnie" data-i18n="nav_about">O mnie</a></li>
+          <li><a href="#uslugi" data-i18n="nav_services">Usługi</a></li>
+          <li><a href="#projekty" data-i18n="nav_projects">Projekty</a></li>
+          <li><a href="#kontakt" data-i18n="nav_contact">Kontakt</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 data-i18n="f_contact">Kontakt</h3>
+        <ul>
+          <li><a href="#kontakt">Email</a></li>
+          <li><a href="https://github.com/Kukkenn" target="_blank" rel="noopener">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div data-i18n="f_rights">© 2026 Bartosz Grześkowiak. Wszelkie prawa zastrzeżone.</div>
+      <div data-i18n="f_plain">Czysty HTML, CSS & JS</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const emailAddress = '65-enty.chichotac@icloud.com';
+
+  function copyEmail() {
+    const toast = document.getElementById('copied-toast');
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(emailAddress).then(() => showToast(toast)).catch(() => fallbackCopy(emailAddress, toast));
+    } else {
+      fallbackCopy(emailAddress, toast);
+    }
+  }
+
+  function fallbackCopy(text, toast) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showToast(toast); } catch (err) { console.error('Błąd kopiowania:', err); }
+    document.body.removeChild(ta);
+  }
+
+  function showToast(toast) {
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+</script>
+
+
+<script>
+  (function () {
+    var EN = {
+      "title": "Bartosz Grześkowiak | Frontend Developer and automation specialist",
+      "desc": "I build fast websites and Python scripts that save time. No heavy frameworks and no unnecessary fuss.",
+      "nav_about": "About",
+      "nav_services": "Services",
+      "nav_projects": "Projects",
+      "nav_contact": "Contact",
+      "kicker": "Open to new projects",
+      "h1": "I build <span>fast websites</span> and scripts that do the work for you.",
+      "hero_p": "Hi, I'm Bartosz. I write websites from scratch in plain HTML, CSS and JavaScript, so they load instantly. I also build Python scripts that take boring, repetitive work off your plate.",
+      "cta1": "Message me, free quote ➔",
+      "cta2": "See what I've built",
+      "code_c": "# Technical specification",
+      "code_var": "code",
+      "code_val": "\"Clean, no overhead\"",
+      "status_val": "\"Open to projects\"",
+      "m1v": "< 1 second",
+      "m1l": "That is how fast my sites load on average",
+      "m2v": "100% clean code",
+      "m2l": "No templates and no heavy frameworks",
+      "m3v": "Up to 90% less work",
+      "m3l": "When a Python script handles the repetitive tasks",
+      "m4v": "Quote in 24h",
+      "m4l": "I reply and quote for free, usually within a day",
+      "about_h": "About me",
+      "about_note": "A short note on how I work",
+      "about_text": "I don't build sites on heavy templates that take forever to load. I write my own lightweight code in HTML, CSS and JavaScript, plus Python scripts that tidy up data and save hours of work. I want your site to be fast, good looking and comfortable on a phone, and to leave you more time to run your business.",
+      "svc_h": "How I can help",
+      "svc_note": "Real problems, real solutions",
+      "s1_num": "01 / Websites",
+      "s1_title": "A website or landing page from scratch",
+      "s1_prob": "A page built with a site builder loads slowly and visitors leave before they see your offer.",
+      "s1_sol": "I write it from scratch in clean code. It loads in under a second, so more people coming from ads actually see it.",
+      "s2_num": "02 / Fixes",
+      "s2_title": "Fixing the layout and the mobile version",
+      "s2_prob": "On a phone everything falls apart, elements overlap or a script lags.",
+      "s2_sol": "I find the bug, fix the code and make sure everything looks good and runs smoothly on every screen.",
+      "s3_num": "03 / Automation",
+      "s3_title": "Python scripts that save you time",
+      "s3_prob": "Every month you lose hours retyping, sorting and checking CSV or Excel files.",
+      "s3_sol": "I'll write a script that does it for you. What took hours takes a fraction of a second.",
+      "lbl_prob": "Problem:",
+      "lbl_sol": "How I help:",
+      "ask": "Ask about this",
+      "proj_h": "Selected work",
+      "proj_note": "An app I built from scratch",
+      "proj_alt": "ProjectHub: project library and documentation view in one app",
+      "proj_desc": "An app that keeps all my projects in one place. Repositories, paths, run commands and notes live in a single panel on my own computer, with no cloud and nothing sent out into the world.",
+      "pt1": "<strong>One-click commands.</strong> You save them for each project (e.g. <code>npm run dev</code> or <code>pytest</code>) and run them without opening a terminal.",
+      "pt2": "<strong>Directory scanner.</strong> You point to a folder and the app recognizes the technologies and adds the projects in bulk.",
+      "pt3": "<strong>Safe site preview.</strong> You test sites in an isolated sandbox, protected against Zip-Slip, path traversal and CSRF.",
+      "pt4": "<strong>Editor, docs and backup.</strong> Edit files in the browser, write notes in Markdown and pack everything into a ZIP with one click. The interface comes in Polish and English.",
+      "impact": "100% local: SQLite on 127.0.0.1, so your code and data never leave your computer",
+      "view_code": "View the code on GitHub ↗",
+      "more": "You can find the rest of my projects on GitHub",
+      "ct_h": "Let's talk about your project",
+      "ct_p": "Want a faster website or to get rid of boring, repetitive work? Write me a few sentences about what you need and I'll come back with a free quote. I usually reply within a day.",
+      "st_avail": "Available for work",
+      "st_resp_l": "Response time",
+      "st_resp_v": "Usually within a day",
+      "st_loc_l": "Location",
+      "st_loc_v": "Poland, working remotely",
+      "em_label": "My email address",
+      "copied": "Copied!",
+      "copy_btn": "Copy address",
+      "f_text": "I build fast websites and Python scripts. Clean code, speed and a proper look.",
+      "f_nav": "Navigation",
+      "f_contact": "Contact",
+      "f_rights": "© 2026 Bartosz Grześkowiak. All rights reserved.",
+      "f_plain": "Plain HTML, CSS & JS"
+};
+
+    var root = document.documentElement;
+    var metas = [
+      ['meta[name="description"]', 'desc'],
+      ['meta[property="og:title"]', 'title'],
+      ['meta[property="og:description"]', 'desc']
+    ];
+
+    function applyLang(lang) {
+      var en = lang === 'en';
+      root.lang = lang;
+
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        if (el.dataset.pl === undefined) el.dataset.pl = el.textContent;
+        var t = en ? EN[el.dataset.i18n] : el.dataset.pl;
+        el.textContent = t === undefined ? el.dataset.pl : t;
+      });
+
+      document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+        if (el.dataset.plHtml === undefined) el.dataset.plHtml = el.innerHTML;
+        var t = en ? EN[el.dataset.i18nHtml] : el.dataset.plHtml;
+        el.innerHTML = t === undefined ? el.dataset.plHtml : t;
+      });
+
+      document.querySelectorAll('[data-i18n-alt]').forEach(function (el) {
+        if (el.dataset.plAlt === undefined) el.dataset.plAlt = el.getAttribute('alt');
+        el.setAttribute('alt', en ? EN[el.dataset.i18nAlt] : el.dataset.plAlt);
+      });
+
+      if (document.documentElement.dataset.plTitle === undefined) document.documentElement.dataset.plTitle = document.title;
+      document.title = en ? EN.title : document.documentElement.dataset.plTitle;
+
+      metas.forEach(function (m) {
+        var el = document.querySelector(m[0]);
+        if (!el) return;
+        if (el.dataset.pl === undefined) el.dataset.pl = el.getAttribute('content');
+        el.setAttribute('content', en ? EN[m[1]] : el.dataset.pl);
+      });
+
+      var loc = document.querySelector('meta[property="og:locale"]');
+      if (loc) loc.setAttribute('content', en ? 'en_US' : 'pl_PL');
+
+      document.querySelectorAll('.lang-switch button').forEach(function (b) {
+        b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false');
+      });
+
+      var nav = document.getElementById('nav'), btn = document.getElementById('menu-btn');
+      if (nav && btn) {
+        var open = nav.classList.contains('open');
+        btn.setAttribute('aria-label', open ? (en ? 'Close menu' : 'Zamknij menu') : (en ? 'Open menu' : 'Otwórz menu'));
+      }
+    }
+
+    window.setLang = function (lang) {
+      if (lang !== 'pl' && lang !== 'en') return;
+      try { localStorage.setItem('lang', lang); } catch (e) {}
+      applyLang(lang);
+    };
+
+    document.querySelectorAll('.lang-switch button').forEach(function (b) {
+      b.addEventListener('click', function () { window.setLang(b.dataset.lang); });
+    });
+
+    if (root.lang === 'en') applyLang('en');
+  })();
+</script>
+
+<script>
+  (function () {
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* menu na telefonie */
+    var nav = document.getElementById('nav');
+    var btn = document.getElementById('menu-btn');
+
+    function setOpen(open) {
+      nav.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      var en = document.documentElement.lang === 'en';
+      btn.setAttribute('aria-label', open ? (en ? 'Close menu' : 'Zamknij menu') : (en ? 'Open menu' : 'Otwórz menu'));
+    }
+
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setOpen(!nav.classList.contains('open'));
+    });
+    nav.querySelectorAll('.links a').forEach(function (a) {
+      a.addEventListener('click', function () { setOpen(false); });
+    });
+    document.addEventListener('click', function (e) {
+      if (!nav.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') setOpen(false);
+    });
+
+    /* pasek postępu przewijania */
+    var bar = document.createElement('div');
+    bar.className = 'progress';
+    document.body.appendChild(bar);
+    var ticking = false;
+
+    function updateBar() {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      bar.style.transform = 'scaleX(' + p + ')';
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(updateBar); }
+    }, { passive: true });
+    updateBar();
+
+    /* elementy pojawiają się płynnie przy przewijaniu */
+    if (reduce || !('IntersectionObserver' in window)) return;
+
+    var sel = '.section-head, .metric-card, .about-box, .service-card, .project-card, .projects-more, ' +
+              '.status-card, .contact-item, .contact-form, .footer-brand, .footer-col';
+    var items = Array.prototype.slice.call(document.querySelectorAll(sel));
+    document.documentElement.classList.add('js-reveal');
+    items.forEach(function (el) { el.classList.add('rv'); });
+
+    items.forEach(function (el) {
+      var sibs = Array.prototype.filter.call(el.parentNode.children, function (c) {
+        return c.classList.contains('rv');
+      });
+      el.style.transitionDelay = Math.min(sibs.indexOf(el), 3) * 80 + 'ms';
+    });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        el.classList.add('in');
+        io.unobserve(el);
+        setTimeout(function () {          // po animacji wracają zwykłe style (hover itp.)
+          el.classList.remove('rv', 'in');
+          el.style.transitionDelay = '';
+        }, 1100);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+
+    items.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+
+
+<script>
+  (function () {
+    var root = document.documentElement;
+
+    /* ekran startowy: wybór języka (pierwsza wizyta) albo krótka animacja (raz na sesję) */
+    var introEl = document.getElementById('intro');
+
+    if (root.classList.contains('intro')) {
+      var finished = false;
+      var finish = function () {
+        if (finished) return;
+        finished = true;
+        root.classList.add('intro-out', 'ready');
+        try { sessionStorage.setItem('introSeen', '1'); } catch (e) {}
+        setTimeout(function () { root.classList.remove('intro', 'intro-out', 'choose'); }, 950);
+      };
+
+      if (root.classList.contains('choose')) {
+        introEl.setAttribute('role', 'dialog');
+        introEl.setAttribute('aria-label', 'Wybierz język / Choose your language');
+        introEl.querySelectorAll('.lang-btn').forEach(function (b) {
+          b.addEventListener('click', function () { window.setLang(b.dataset.lang); finish(); });
+        });
+        setTimeout(function () {
+          var first = introEl.querySelector('.lang-btn');
+          if (first && !finished) first.focus({ preventScroll: true });
+        }, 1100);
+      } else {
+        introEl.setAttribute('aria-hidden', 'true');
+        setTimeout(finish, 1700);
+        setTimeout(finish, 4000);                       // bezpiecznik
+        introEl.addEventListener('click', finish);      // kliknięcie pomija
+      }
+    }
+
+    /* światło podążające za kursorem po kartach */
+    var cards = document.querySelectorAll('.metric-card, .service-card, .project-card');
+    cards.forEach(function (card) {
+      card.addEventListener('pointermove', function (e) {
+        var r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      }, { passive: true });
+    });
+  })();
+</script>
+
+</body>
+</html>
