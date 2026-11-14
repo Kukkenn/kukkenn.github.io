@@ -16,7 +16,7 @@ Szybkie strony www w czystym kodzie oraz skrypty w Pythonie, które robią nudn�
 </p>
 
 <p align="center">
-  <a href="https://kukkenn.github.io"><b>🌐 Otwórz portfolio na żywo ➔</b></a>
+  <a href="https://kukkenn.github.io"><b> Otwórz portfolio ➔</b></a>
 </p>
 
 <br>
