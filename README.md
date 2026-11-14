@@ -38,6 +38,7 @@ To kod mojego osobistego portfolio. Znajdziesz tu wszystko, czym się zajmuję, 
 ## <img src="https://cdn.simpleicons.org/lightning/5B84FF" width="20" align="center"> &nbsp;W czym pomagam
 
 | | |
+| :--- |
 | **Strony i landing page** | Piszę od zera w czystym kodzie. Ładują się poniżej sekundy. |
 | **Naprawa wyglądu i wersji mobilnej** | Znajduję błąd i sprawiam, że wszystko działa na każdym ekranie. |
 | **Skrypty w Pythonie** | Automatyzuję powtarzalne zadania, np. porządkowanie plików CSV i Excela. |
